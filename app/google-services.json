@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "90407799646",
+    "firebase_url": "https://fir-loginandsaving.firebaseio.com",
+    "project_id": "fir-loginandsaving",
+    "storage_bucket": "fir-loginandsaving.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90407799646:android:132e0e48cabe8a11",
+        "android_client_info": {
+          "package_name": "com.project.altysh.firebaseloginandsaving"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "90407799646-2u8v6usnojnjkmjas296q23q6la9qido.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.project.altysh.firebaseloginandsaving",
+            "certificate_hash": "3df615ae8298905debd323bd8a2bbe3895ce7f6d"
+          }
+        },
+        {
+          "client_id": "90407799646-a21hk2r8cdtbleb7r912ig5ddfg5ss2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN_VFQMYMAyOkQxYn1aUSiUL9Aa5855e4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "90407799646-a21hk2r8cdtbleb7r912ig5ddfg5ss2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
