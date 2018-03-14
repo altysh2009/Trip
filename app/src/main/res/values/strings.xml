@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">FireBaseLoginAnd Saving</string>
+    <string name="facebook_application_id" translatable="false">151197158885133</string>
+    <string name="facebook_app_id">151197158885133</string>
+    <string name="fb_login_protocol_scheme">fb151197158885133</string>
+
+    <string name="facebook_login_protocol_scheme" translatable="false">fb151197158885133</string>
+
+    <string name="twitter_consumer_key" translatable="false">lkAp018YxX7fsItIHE76vEmCn</string>
+    <string name="twitter_consumer_secret" translatable="false">GKrgPN3TH623HDysy5oZlTG8HYijY9FHc7xjIOFx2u6q8wnM3D</string>
+
+    <!--nehal add-->
+    <!-- Subtitle text for the empty view that prompts the user to add a Trip -->
+    <string name="empty_view_subtitle_text">Get started by adding a Trip</string>
+
+    <!-- Title for the activity to add a new Trip -->
+    <string name="editor_activity_title_new_Trip">Add a Trip</string>
+
+    <!-- Label editorFragment menu option to save Trip and editorFragment  -->
+    <string name="action_save">Save</string>
+
+    <!-- Toast message editor Fragment  when new Trip has been successfully inserted  -->
+    <string name="editor_insert_Trip_successful">Trip saved</string>
+
+    <!-- Toast message editor Fragment  when new Trip has failed to be inserted  -->
+    <string name="editor_insert_Trip_failed">Error with saving Trip</string>
+
+    <!-- Label for overview category of attributes in editorFragment  -->
+    <string name="category_overview">Overview</string>
+
+
+    <!-- Label for the Trip's info if the info is unknown -->
+    <string name="unknown_info">Unknown description</string>
+
+    <string name="thank_you">Thank you!</string>
+    <string name="permission_message">permission is necessary</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="insert_Trip_failed">fill all empty fields</string>
+    <string name="Trip_Text_Name">Trip Name</string>
+    <string name="TripStartPoint">Start Point</string>
+    <string name="EndPoint">End point</string>
+    <string name="TripDate">set Trip Date</string>
+    <string name="TripNotes">Notes</string>
+    <string name="RoundTrip">Round Trip Direction</string>
+    <string name="TripTime">set Trip Time</string>
+    <!-- Dialog message when user is leaving editor but hasn't saved changes  -->
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+
+    <!-- Dialog button text for the option to discard a user's changes -->
+    <string name="discard">Discard</string>
+
+    <!-- Dialog button text for the option to keep editing the current Trip -->
+    <string name="keep_editing">Keep Editing</string>
+    //
+    <string name="insert_Date_First">Insert Date First</string>
+    <string name="API_KEY">AIzaSyDN_VFQMYMAyOkQxYn1aUSiUL9Aa5855e4</string>
+    <string name="endPointHint">set your Trip End Point</string>
+    <string name="startPointHint">Set Start Point</string>
+    <string name="insert_First_End">Insert First End Point Trip then Add</string>
+    <string name="insert_Note">insert Note then add anther one</string>
+    <string name="insert_End">insert End Point</string>
+</resources>

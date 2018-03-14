@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Options menu for the CatalogActivity -->
+<menu xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".CatalogActivity">
+
+</menu>

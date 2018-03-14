@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.addTrip.EditorActivity">
+
+    <fragment
+        android:id="@+id/AddTripFragment"
+        android:name="com.project.altysh.firebaseloginandsaving.ui.addTrip.EditorFragmentActivity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/editor_fragment" />
+
+
+</RelativeLayout>

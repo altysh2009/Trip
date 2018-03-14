@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'key0'
+            keyPassword 'master2009'
+            storeFile file('E:/FireBaseLoginAndSaving/TripPlanner.jks')
+            storePassword 'master2009'
+        }
+    }
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.project.altysh.firebaseloginandsaving"
+        minSdkVersion 22
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.firebase:firebase-database:11.8.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile 'com.firebaseui:firebase-ui-auth:3.2.2'
+    // Required only if Facebook login support is required
+    compile 'com.facebook.android:facebook-android-sdk:4.27.0'
+    // Required only if Twitter login support is required
+    compile('com.twitter.sdk.android:twitter-core:3.0.0@aar') { transitive = true }
+    implementation 'com.facebook.android:facebook-login:[4,5)'
+    implementation 'com.google.android.gms:play-services-places:11.8.0'
+    // retrofit, gson
+}
+
+
+
+apply plugin: 'com.google.gms.google-services'
