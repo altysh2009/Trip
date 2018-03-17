@@ -59,6 +59,7 @@ public class FireBaseConnection {
     private boolean lisner = false;
     private boolean fireLisner = false;
     private List<Trip_DTO> trip_dtoList;
+    private List<HistoryDto> historyDtos;
     private UserProfile profile;
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -107,10 +108,10 @@ public class FireBaseConnection {
 
     }
 
-    public static FireBaseConnection getInstance() {
+    public static FireBaseConnection getInstance(Context context) {
         if (myobject != null)
             return myobject;
-        else return null;
+        else return new FireBaseConnection(context);
     }
 
     public static FireBaseConnection getInstance(Context context, connectToUiMain connectToUiMain) {
@@ -147,6 +148,7 @@ public class FireBaseConnection {
         this.connection = connection;
     }
 
+
     public void rejesterLisner() {
         if (!lisner) {
             Log.i(TAG, "rejesterLisner: ");
@@ -154,6 +156,7 @@ public class FireBaseConnection {
                 FirebaseAuth.getInstance().addAuthStateListener(fireBaseLisner.getLisner());
             fireLisner = true;
             if (!userId.equals("")) {
+                Toast.makeText(context, "rejster lisner", Toast.LENGTH_LONG).show();
                 addUserChangeListenerToUser();
                 addUserChangeListenerToTrips();
                 addUserChangeListenerToHistory();
@@ -162,6 +165,7 @@ public class FireBaseConnection {
         } else {
 
         }
+
     }
 
 
@@ -223,6 +227,8 @@ public class FireBaseConnection {
     }
 
     private void addUserChangeListenerToTrips() {
+        Log.i(TAG, "addUserChangeListenerToHistory: " + "history");
+        System.out.println("addUserChangeListenerToHistory");
         // User data change listener
         trips = new ReffranceLisner(new ValueEventListener() {
             @Override
@@ -255,6 +261,8 @@ public class FireBaseConnection {
 
     private void addUserChangeListenerToHistory() {
         // User data change listener
+        Log.i(TAG, "addUserChangeListenerToHistory: " + "history");
+        System.out.println("addUserChangeListenerToHistory");
         history = new ReffranceLisner(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -265,7 +273,7 @@ public class FireBaseConnection {
                 // Check for null
                 if (user == null) {
                     Log.e(TAG, "User data is null!");
-                    connection.updateHistory(new ArrayList<HistoryDto>());
+                    connection.updateHistory(history);
                 } else {
                     connection.updateHistory(history);
                 }
@@ -294,6 +302,9 @@ public class FireBaseConnection {
             addUserChangeListenerToUser();
     }
 
+    /**
+     * called to remove all lisner made to the actitvty when it is paused
+     */
     public void removeLisner() {
         if (lisner) {
             if (trips != null)
@@ -315,18 +326,32 @@ public class FireBaseConnection {
             FirebaseAuth.getInstance().removeAuthStateListener(fireBaseLisner.getLisner());
             fireLisner = false;
         }
+        Toast.makeText(context, "lisnerRemoved", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * @param trip the new list
+     *             update the trip list on firebase
+     */
     public void setList(List<Trip_DTO> trip) {
         Log.i(TAG, "setList: " + userId);
         mFirebaseDatabase.child(TRIPS).child(userId).setValue(trip);
     }
 
+    /**
+     * @param userProfile the modified user profile
+     *                    update the user profile on firebase
+     */
     public void setUser(UserProfile userProfile) {
         Log.i(TAG, "setList: " + userId);
         mFirebaseDatabase.child(USER).child(userId).setValue(userProfile);
     }
 
+    /**
+     * @param context the activtiy
+     * @return true if you have google service else false
+     * doesn't detect the version problem
+     */
     public boolean checkGoogleService(Activity context) {
         boolean good = false;
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
@@ -346,19 +371,32 @@ public class FireBaseConnection {
         return good;
     }
 
+    /**
+     * @param on wifi state
+     *           if true firebase goes online
+     *           else it goes offline
+     */
     public void setSync(boolean on) {
+        Log.i(TAG, "setSync: " + on);
         if (on)
             mFirebaseInstance.goOnline();
         else
             mFirebaseInstance.goOffline();
     }
 
+    /**
+     * @param trip_dto the trip to be deleted
+     *                 remove it from firebase
+     */
     public void deleteTrip(Trip_DTO trip_dto) {
 
         trip_dtoList.remove(trip_dto);
         setList(trip_dtoList);
     }
 
+    /**
+     * @param trip_dto
+     */
     public void addTrip(Trip_DTO trip_dto) {
         if (trip_dtoList != null)
             trip_dtoList.add(trip_dto);
@@ -369,6 +407,19 @@ public class FireBaseConnection {
         setList(trip_dtoList);
     }
 
+    public void addHistoryTrip(HistoryDto historyDto) {
+        if (historyDtosList != null)
+            historyDtosList.add(historyDto);
+        else {
+            historyDtosList = new ArrayList<>();
+            historyDtosList.add(historyDto);
+        }
+        setHistory(historyDtosList);
+    }
+
+    public void setHistory(List<HistoryDto> historyDtosList) {
+        mFirebaseDatabase.child(HISTORY).child(userId).setValue(historyDtosList);
+    }
     public void updateProfile(UserProfile profile) {
         this.profile = profile;
         setUser(profile);

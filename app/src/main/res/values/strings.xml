@@ -59,4 +59,20 @@
     <string name="insert_First_End">Insert First End Point Trip then Add</string>
     <string name="insert_Note">insert Note then add anther one</string>
     <string name="insert_End">insert End Point</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_navigation">Main</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_history_">History</string>
+
+    <string name="status">status</string>
+    <string name="date">the date</string>
+    <string name="distance">dis in kilo</string>
+    <string name="durtation">time in the trip</string>
+    <string name="nameofthetrip">trip name</string>
 </resources>

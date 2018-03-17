@@ -29,6 +29,7 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.project.altysh.firebaseloginandsaving.R;
+import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
 import com.project.altysh.firebaseloginandsaving.dto.PointL;
 import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
@@ -431,11 +432,17 @@ public class EditorFragmentActivity extends Fragment implements DatePickerDialog
                 pointLS.add(new PointL(EndLatitudeList.get(i), EndLongitudeList.get(i)));
             TripInf.setImageWithoutRoute(s);
             TripInf.setImageWithRoute(MaPUtil.getStaticMapRoad(s, pointLS));
-            FireBaseConnection.getInstance().addTrip(TripInf);
+            HistoryDto historyDto = new HistoryDto();
+            historyDto.setTrip_dto(TripInf);
+            historyDto.setAvgSpeed(70);
+            historyDto.setDistance(70);
+            historyDto.setDurtation(111111);
+            FireBaseConnection.getInstance(getActivity().getApplicationContext()).addHistoryTrip(historyDto);
+            FireBaseConnection.getInstance(getActivity().getApplicationContext()).addTrip(TripInf);
 
 
-            Log.i("MAP", "saveTrip: " + s);
-            Log.i("MAP", "saveTrip: " + MaPUtil.getStaticMapRoad(s, pointLS));
+            //  Log.i("MAP", "saveTrip: " + s);
+            //Log.i("MAP", "saveTrip: " + MaPUtil.getStaticMapRoad(s, pointLS));
             Toast.makeText(getActivity(), getString(R.string.editor_insert_Trip_successful), Toast.LENGTH_LONG).show();
             // Exit activity
             // Intent resultIntent = new Intent();

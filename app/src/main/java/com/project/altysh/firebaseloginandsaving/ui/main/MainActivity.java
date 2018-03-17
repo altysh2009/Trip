@@ -2,7 +2,10 @@ package com.project.altysh.firebaseloginandsaving.ui.main;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,11 +23,14 @@ import com.project.altysh.firebaseloginandsaving.dto.UserProfile;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.Controls;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
 import com.project.altysh.firebaseloginandsaving.ui.addTrip.EditorActivity;
+import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.FloatingWidgetService;
+import com.project.altysh.firebaseloginandsaving.ui.history.History_Activity;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements FireBaseConnection.connectToUiMain, Controls {
     private static final int RC_SIGN_IN = 123;
+    private static final int DRAW_OVER_OTHER_APP_PERMISSION = 123;
     final int itemAdd = 112233;
     FireBaseConnection fireBaseConnection;
     String token;
@@ -85,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
 
         if (requestCode == RC_SIGN_IN) {
             IdpResponse response = IdpResponse.fromResultIntent(data);
-            Log.i(TAG, "onActivityResult: " + response.getIdpToken());
+            if (response != null)
+                Log.i(TAG, "onActivityResult: " + response.getIdpToken());
             if (resultCode == RESULT_OK) {
 
                 // Successfully signed in
@@ -112,6 +119,18 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        fireBaseConnection.removeLisner();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
     public void updateUi(List<Trip_DTO> trip) {
         Toast.makeText(this, trip.toString(), Toast.LENGTH_SHORT).show();
         trip_dtos = trip;
@@ -130,7 +149,9 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
 
     @Override
     public void updateHistory(List<HistoryDto> history) {
+        Toast.makeText(this, "histir", Toast.LENGTH_LONG).show();
 
+        Toast.makeText(this, history.toString(), Toast.LENGTH_SHORT).show();
     }
 
     public void deleteLast(View view) {
@@ -146,9 +167,31 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
         fireBaseConnection.setUser(userProfiles);
     }
 
+    public void showBuble(View view) {
+        askForSystemOverlayPermission();
+        startService(new Intent(MainActivity.this, FloatingWidgetService.class).putExtra("activity_background", true));
+    }
+
+    private void askForSystemOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, DRAW_OVER_OTHER_APP_PERMISSION);
+        }
+    }
     @Override
     public void setTrip(View view) {
         Log.i(TAG, "setTrip: ");
+
+
+    }
+
+    public void openHistory(View view) {
+        Intent intent = new Intent(getApplicationContext(), History_Activity.class);
+        startActivity(intent);
 
 
     }

@@ -1,4 +1,4 @@
-package com.project.altysh.firebaseloginandsaving;
+package com.project.altysh.firebaseloginandsaving.recivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,7 +31,7 @@ public class MyReceiver extends BroadcastReceiver {
         if (netInfoWifi != null && netInfoWifi.isConnectedOrConnecting()) {
             Log.v("TAG", "Wifi Internet connected");
             context.getSharedPreferences(FireBaseConnection.SHAREPREF, 0).edit().putBoolean(FireBaseConnection.WIFICONNECTION, true).apply();
-            FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance();
+            FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(context);
             if (fireBaseConnection != null)
                 fireBaseConnection.setSync(netInfoWifi.isConnectedOrConnecting());
 
