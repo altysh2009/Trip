@@ -6,12 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="350dp"
     android:layout_margin="8dp"
-    android:background="@android:color/darker_gray"
-    android:elevation="4dp">
+    android:elevation="8dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        >
 
         <ImageView
             android:id="@+id/route"
@@ -30,19 +31,21 @@
 
         <ImageView
             android:id="@+id/menu"
-            android:layout_width="23dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_menu_black_24dp" />
+            app:srcCompat="@android:drawable/ic_delete" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
             android:text="@string/nameofthetrip"
             android:textColor="@android:color/black"
             android:textSize="24sp"

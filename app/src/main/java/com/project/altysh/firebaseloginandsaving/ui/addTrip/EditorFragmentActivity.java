@@ -29,11 +29,11 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.project.altysh.firebaseloginandsaving.R;
-import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
-import com.project.altysh.firebaseloginandsaving.dto.PointL;
+import com.project.altysh.firebaseloginandsaving.ReminderAlarm.FnReminder;
 import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
 import com.project.altysh.firebaseloginandsaving.mapUtil.MaPUtil;
+import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.PointDara;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -413,8 +413,10 @@ public class EditorFragmentActivity extends Fragment implements DatePickerDialog
                     NotesListString.add(noteStr);
                 }
             }
-
+            FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getActivity().getApplicationContext());
             Trip_DTO TripInf = new Trip_DTO();
+            TripInf.setId(fireBaseConnection.getNewId());
+            Log.i("TAG", "saveTrip: " + TripInf.getId());
             TripInf.setDateTime(DateTime);
             TripInf.setStartPoint(StartPointString);
             TripInf.setTripName(TripNameString);
@@ -426,19 +428,17 @@ public class EditorFragmentActivity extends Fragment implements DatePickerDialog
             TripInf.setEndLatitude(EndLatitudeList);
             TripInf.setEndLongitude(EndLongitudeList);
             String s = MaPUtil.getStaticMapNoRoad(TripInf);
-            List<PointL> pointLS = new ArrayList<>();
-            pointLS.add(new PointL(TripInf.getStartLatitude(), TripInf.getStartLongitude()));
+            List<PointDara> pointLS = new ArrayList<>();
+            pointLS.add(new PointDara(TripInf.getStartLongitude(), TripInf.getStartLatitude(), new Date().getTime()));
             for (int i = 0; i < EndLatitudeList.size(); i++)
-                pointLS.add(new PointL(EndLatitudeList.get(i), EndLongitudeList.get(i)));
+                pointLS.add(new PointDara(EndLongitudeList.get(i), EndLatitudeList.get(i), new Date().getTime()));
             TripInf.setImageWithoutRoute(s);
             TripInf.setImageWithRoute(MaPUtil.getStaticMapRoad(s, pointLS));
-            HistoryDto historyDto = new HistoryDto();
-            historyDto.setTrip_dto(TripInf);
-            historyDto.setAvgSpeed(70);
-            historyDto.setDistance(70);
-            historyDto.setDurtation(111111);
-            FireBaseConnection.getInstance(getActivity().getApplicationContext()).addHistoryTrip(historyDto);
+
             FireBaseConnection.getInstance(getActivity().getApplicationContext()).addTrip(TripInf);
+            FnReminder fnReminder = FnReminder.getInstance(getActivity());
+            fnReminder.AddReminder(TripInf, MaPUtil.getIntentDir(TripInf));
+//            startActivity(MaPUtil.getIntentDir(TripInf));
 
 
             //  Log.i("MAP", "saveTrip: " + s);

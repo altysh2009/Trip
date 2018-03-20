@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.project.altysh.firebaseloginandsaving.dto.PointL;
 import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
+import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.PointDara;
 
 import java.util.List;
 
@@ -32,6 +32,8 @@ public class MaPUtil {
 
     public static String getStaticMapNoRoad(Trip_DTO trip_dto) {
         StringBuilder stringBuilder = new StringBuilder();
+//        LatLngBounds bounds = new LatLngBounds(start, dest);
+//        bounds.getCenter();
         stringBuilder.append("https://maps.googleapis.com/maps/api/staticmap?");
         StringBuilder builder = new StringBuilder();
         builder.append("size=600x300&maptype=roadmap");
@@ -45,17 +47,18 @@ public class MaPUtil {
 
     }
 
-    public static String getStaticMapRoad(String point, List<PointL> pointLS) {
+    public static String getStaticMapRoad(String point, List<PointDara> pointLS) {
         StringBuilder builder = new StringBuilder();
         StringBuilder stringBuilder = new StringBuilder();
         // builder.append(point);
         if (pointLS.size() > 0)
             builder.append("&path=color:0x0000ff|weight:5");
-        for (PointL pointL : pointLS) {
-            builder.append("|").append(pointL.getLon()).append(",").append(pointL.getLan());
+        for (PointDara pointL : pointLS) {
+            builder.append("|").append(pointL.getLatitue()).append(",").append(pointL.getLongtute());
         }
 
         String url = stringBuilder.append(point).append(builder.toString().replace(" ", "")).toString();
+        Log.i("wq", "getStaticMapRoad: " + url);
         return url;
 
     }
@@ -63,7 +66,8 @@ public class MaPUtil {
 
     private static Uri getUri(Trip_DTO trip_dto) {
         StringBuffer builder = new StringBuffer();
-        builder.append("http//:");
+
+        builder.append("http://");
         builder.append("maps.google.com/maps?");
         builder.append("saddr=" + trip_dto.getStartLatitude() + "," + trip_dto.getStartLongitude());
         StringBuilder stringBuffer = new StringBuilder();
@@ -74,10 +78,13 @@ public class MaPUtil {
         }
 
         builder.append("&daddr=" + stringBuffer.toString());
-        //Log.e("uri", "getUri: "+Uri.parse(uri));
-        Log.e("uri", "getUri: " + builder);
+        //  Log.e("uri", "getUri: "+Uri.parse(builder.toString()));
+        //System.out.println(builder);
+
+
         //return builder.build();
-        return Uri.parse(builder.toString());
+        Uri uri = Uri.parse(builder.toString().replace(" ", ""));
+        return uri;
     }
 
 }

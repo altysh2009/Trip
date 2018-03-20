@@ -1,12 +1,13 @@
 package com.project.altysh.firebaseloginandsaving.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by Altysh on 3/7/2018.
  */
 
-public class Trip_DTO {
+public class Trip_DTO implements Serializable {
     private int id;
     private String tripName;
     private String startPoint;

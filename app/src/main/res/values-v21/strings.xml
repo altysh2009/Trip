@@ -5,4 +5,8 @@
     <string name="distance">dis in kilo</string>
     <string name="durtation">time in the trip</string>
     <string name="nameofthetrip">trip name</string>
+    <string name="todo">To Do List</string>
+    <string name="dis">Distance</string>
+    <string name="starttime">Start Time</string>
+    <string name="arrivaltime">Arrival Time</string>
 </resources>

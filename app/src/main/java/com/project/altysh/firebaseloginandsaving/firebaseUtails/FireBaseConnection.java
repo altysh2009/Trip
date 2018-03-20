@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.ConnectionResult;
@@ -20,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
+import com.project.altysh.firebaseloginandsaving.ReminderAlarm.FnReminder;
 import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
 import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
 import com.project.altysh.firebaseloginandsaving.dto.UserProfile;
@@ -59,15 +59,15 @@ public class FireBaseConnection {
     private boolean lisner = false;
     private boolean fireLisner = false;
     private List<Trip_DTO> trip_dtoList;
-    private List<HistoryDto> historyDtos;
+
     private UserProfile profile;
+    private int newId;
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
             new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
             new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
             new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
     private FireBaseLisner fireBaseLisner;
-
     private FireBaseConnection(Context context) {
         sharedLisner = new SharedLisner(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -128,6 +128,49 @@ public class FireBaseConnection {
         return myobject;
     }
 
+    public int getNewId() {
+        if (trip_dtoList != null)
+            newId = trip_dtoList.size() + 1;
+        else newId = 0;
+        return newId;
+    }
+
+    public Trip_DTO getTripById(int id) {
+        if (trip_dtoList != null) {
+            for (Trip_DTO trip_dto : trip_dtoList) {
+                if (trip_dto.getId() == id) {
+                    return trip_dto;
+                }
+            }
+        }
+        return null;
+    }
+
+    public HistoryDto getHistoryId(int id) {
+        if (historyDtosList != null)
+            for (HistoryDto historyDto : historyDtosList) {
+                if (id == historyDto.getTrip_dto().getId())
+                    return historyDto;
+            }
+        return null;
+    }
+
+    public void editTrip(Trip_DTO trip_dto) {
+        if (trip_dtoList != null)
+            for (Trip_DTO tripDto : trip_dtoList) {
+                if (tripDto.getId() == trip_dto.getId()) {
+                    trip_dtoList.remove(tripDto);
+                    trip_dtoList.add(trip_dto);
+                    setList(trip_dtoList);
+                }
+            }
+    }
+
+    public void deleteHistory(HistoryDto historyDto) {
+        historyDtosList.remove(historyDto);
+        setHistory(historyDtosList);
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -156,10 +199,11 @@ public class FireBaseConnection {
                 FirebaseAuth.getInstance().addAuthStateListener(fireBaseLisner.getLisner());
             fireLisner = true;
             if (!userId.equals("")) {
-                Toast.makeText(context, "rejster lisner", Toast.LENGTH_LONG).show();
+                // Toast.makeText(context, "rejster lisner", Toast.LENGTH_LONG).show();
                 addUserChangeListenerToUser();
-                addUserChangeListenerToTrips();
                 addUserChangeListenerToHistory();
+                addUserChangeListenerToTrips();
+
                 lisner = true;
             } else lisner = false;
         } else {
@@ -326,7 +370,7 @@ public class FireBaseConnection {
             FirebaseAuth.getInstance().removeAuthStateListener(fireBaseLisner.getLisner());
             fireLisner = false;
         }
-        Toast.makeText(context, "lisnerRemoved", Toast.LENGTH_LONG).show();
+        //  Toast.makeText(context, "lisnerRemoved", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -358,7 +402,7 @@ public class FireBaseConnection {
         int status = googleApiAvailability.isGooglePlayServicesAvailable(context);
         // Showing status
         if (status == ConnectionResult.SUCCESS) {
-            Toast.makeText(context, "Google Play Services are available", Toast.LENGTH_SHORT).show();
+            //  Toast.makeText(context, "Google Play Services are available", Toast.LENGTH_SHORT).show();
             good = true;
         } else {
             //tvStatus.setText("Google Play Services are not available");
@@ -429,7 +473,13 @@ public class FireBaseConnection {
     public void logOut() {
         removeLisner();
         userId = "";
+        FnReminder fnReminder = FnReminder.getInstance(context);
+        if (trip_dtoList != null)
+            for (int i = 0; i < trip_dtoList.size(); i++)
+                fnReminder.RemoveReminder(trip_dtoList.get(i));
         sharedPreferences.edit().putString("userid", "");
+        SharedPreferences sharedPreferences = context.getSharedPreferences("firsttime", 0);
+        sharedPreferences.edit().putBoolean("isFrist", true).apply();
         AuthUI.getInstance().signOut(context);
 
 

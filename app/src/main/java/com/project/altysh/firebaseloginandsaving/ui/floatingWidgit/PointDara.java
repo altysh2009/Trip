@@ -12,6 +12,9 @@ public class PointDara implements Serializable {
     private double latitue;
     private long time;
 
+    public PointDara() {
+    }
+
     public PointDara(double longtute, double latitue, long time) {
         this.longtute = longtute;
         this.latitue = latitue;

@@ -11,12 +11,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="TASKS" />
+    <!-- //////////alarm -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.main.MainActivity">
@@ -50,7 +56,46 @@
         <activity
             android:name=".ui.history.History_Activity"
             android:label="@string/title_activity_history_"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".ui.main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.MainActivity" />
+        </activity>
+        <!-- //alarm -->
+        <service
+            android:name=".ReminderAlarm.NotificationService"
+            android:enabled="true"
+            android:label="NotificationServicelabel" />
+
+        <receiver
+            android:name=".ReminderAlarm.MyReceiverDialog"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="NotificationService" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".ReminderAlarm.reminder"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Transparent"></activity>
+
+        <service
+            android:name=".ReminderAlarm.SoundService"
+            android:enabled="true"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".ui.history.HistoryDetails"
+            android:label="@string/title_activity_history_details"
+            android:parentActivityName=".ui.history.History_Activity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.history.History_Activity" />
+        </activity>
     </application>
 
 </manifest>

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.location.Location;
@@ -26,13 +25,21 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.andremion.counterfab.CounterFab;
 import com.project.altysh.firebaseloginandsaving.R;
+import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
+import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
+import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static java.lang.Math.acos;
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 
 /**
  * Created by anupamchugh on 01/08/17.
@@ -40,8 +47,8 @@ import java.util.List;
 
 public class FloatingWidgetService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
-    private static final int LOCATION_INTERVAL = 500;
-    private static final float LOCATION_DISTANCE = 2f;
+    private static final int LOCATION_INTERVAL = 100;
+    private static final float LOCATION_DISTANCE = 20f;
     int mWidth;
     CounterFab counterFab;
     boolean activity_background;
@@ -49,7 +56,14 @@ public class FloatingWidgetService extends Service {
     private LocationManager mLocationManager = null;
     private WindowManager mWindowManager;
     private View mOverlayView;
+    private long startTime;
+    private long endTime;
+    private double distance;
+    private double avgSpeed;
     private List<PointDara> points;
+    private int tripId;
+    private List<Boolean> checked;
+
 
     @Nullable
     @Override
@@ -62,16 +76,21 @@ public class FloatingWidgetService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
 
+
         if (intent != null) {
             activity_background = intent.getBooleanExtra("activity_background", false);
+            Toast.makeText(getApplicationContext(), "not null", Toast.LENGTH_LONG).show();
+            tripId = intent.getIntExtra("trip", 0);
 
         }
+        final FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getApplicationContext());
+        final Trip_DTO trip_dto = fireBaseConnection.getTripById(tripId);
 
         if (mOverlayView == null) {
 
             mOverlayView = LayoutInflater.from(this).inflate(R.layout.overlay_layout, null);
 
-
+            startTime = new Date().getTime();
             final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                     WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT,
@@ -102,17 +121,41 @@ public class FloatingWidgetService extends Service {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    long t = points.get(points.size() - 1).getTime() - points.get(0).getTime();
+                    endTime = new Date().getTime();
+                    double dis = distance;
+                    Log.i(TAG, "onClick: " + dis + " " + t);
+                    avgSpeed = dis / ((t / 3600.0) / 1000.0);
+                    HistoryDto historyDto = new HistoryDto();
+                    historyDto.setTrip_dto(fireBaseConnection.getTripById(tripId));
+                    historyDto.setAvgSpeed(avgSpeed);
+                    historyDto.setDistance(distance);
+                    historyDto.setDurtation(endTime - startTime);
+                    historyDto.setEndTime(endTime);
+                    historyDto.setStartTime(startTime);
+                    historyDto.setPoints(points);
+                    historyDto.setChecked(checked);
+                    historyDto.setStatus(historyDto.DONE);
+                    // Log.i
+                    // (TAG, "onClick: "+avgSpeed+" "+distance+" "+startTime+" "+endTime+" "+points+" "+checked);
+                    fireBaseConnection.addHistoryTrip(historyDto);
+                    fireBaseConnection.deleteTrip(trip_dto);
+
 //                    Intent intent = new Intent(FloatingWidgetService.this, details.class);
 //                                    intent.putExtra("array", (Serializable) points);
 //                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                                    startActivity(intent);
-//                                    stopSelf();
+                    stopSelf();
                 }
             });
             final ArrayList<NoteObj> s = new ArrayList<>();
+            checked = new ArrayList<>();
+            for (int i = 0; i < trip_dto.getTripNotes().size(); i++) {
+                s.add(new NoteObj(false, trip_dto.getTripNotes().get(i)));
+                checked.add(false);
+            }
 
-            for (int i = 0; i < 20; i++)
-                s.add(new NoteObj(false, "hallommmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm\nmmmmmmmmmmmmmmmmm" + i));
+
             MySimpleArrayAdapter mySimpleArrayAdapter = new MySimpleArrayAdapter(getApplicationContext(), s);
             listView.setAdapter(mySimpleArrayAdapter);
             counterFab.setCount(s.size());
@@ -120,13 +163,18 @@ public class FloatingWidgetService extends Service {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     NoteObj noteObj = s.get(position);
+                    LinearLayout linearLayout2 = view.findViewById(R.id.itemselct);
                     if (!noteObj.selected) {
-                        view.setBackgroundColor(Color.parseColor("#2196F3"));
+                        linearLayout2.setBackground(getApplicationContext().getDrawable(R.drawable.roundednotsel));
                         noteObj.selected = true;
+                        checked.remove(position);
+                        checked.add(position, Boolean.TRUE);
                         counterFab.setCount(counterFab.getCount() - 1);
                     } else {
-                        view.setBackgroundColor(Color.WHITE);
+                        linearLayout2.setBackground(getApplicationContext().getDrawable(R.drawable.rounded));
                         noteObj.selected = false;
+                        checked.remove(position);
+                        checked.add(position, Boolean.FALSE);
                         counterFab.setCount(counterFab.getCount() + 1);
                     }
                 }
@@ -272,6 +320,40 @@ public class FloatingWidgetService extends Service {
         Log.i(TAG, "onDestroy: ");
     }
 
+    double distance_on_geoid(double lat1, double lon1, double lat2, double lon2) {
+        float M_PI = 3.14f;
+        // Convert degrees to radians
+        lat1 = lat1 * M_PI / 180.0;
+        lon1 = lon1 * M_PI / 180.0;
+
+        lat2 = lat2 * M_PI / 180.0;
+        lon2 = lon2 * M_PI / 180.0;
+
+        // radius of earth in metres
+        double r = 6378100;
+
+        // P
+        double rho1 = r * cos(lat1);
+        double z1 = r * sin(lat1);
+        double x1 = rho1 * cos(lon1);
+        double y1 = rho1 * sin(lon1);
+
+        // Q
+        double rho2 = r * cos(lat2);
+        double z2 = r * sin(lat2);
+        double x2 = rho2 * cos(lon2);
+        double y2 = rho2 * sin(lon2);
+
+        // Dot product
+        double dot = (x1 * x2 + y1 * y2 + z1 * z2);
+        double cos_theta = dot / (r * r);
+
+        double theta = acos(cos_theta);
+
+        // Distance in Metres
+        return r * theta;
+    }
+
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
 
@@ -286,6 +368,8 @@ public class FloatingWidgetService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
             mLastLocation.set(location);
             points.add(new PointDara(location.getLongitude(), location.getLatitude(), new Date().getTime()));
+            if (points.size() > 1)
+                distance = distance_on_geoid(location.getLatitude(), location.getLongitude(), points.get(points.size() - 2).getLatitue(), points.get(points.size() - 2).getLongtute());
         }
 
         @Override

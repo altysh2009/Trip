@@ -4,12 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.project.altysh.firebaseloginandsaving.ui.history.HistoryFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hhhhhhhhh"
-        android:textSize="22sp" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclehistory"
         android:layout_width="match_parent"

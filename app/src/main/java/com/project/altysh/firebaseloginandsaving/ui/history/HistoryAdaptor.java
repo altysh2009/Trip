@@ -1,17 +1,20 @@
 package com.project.altysh.firebaseloginandsaving.ui.history;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.project.altysh.firebaseloginandsaving.R;
 import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
+import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
+import com.project.altysh.firebaseloginandsaving.mapUtil.MaPUtil;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -25,10 +28,12 @@ import java.util.List;
 public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHolder> {
     ArrayList<HistoryDto> historyDtoArrayList = new ArrayList<>();
     Context context;
+    FireBaseConnection fireBaseConnection;
 
     public HistoryAdaptor(Context context) {
         this.historyDtoArrayList = historyDtoArrayList;
         this.context = context;
+        fireBaseConnection = FireBaseConnection.getInstance(context);
     }
 
     @Override
@@ -44,6 +49,8 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.history_element, parent, false);
+
+
         return new ViewHolder(view);
     }
 
@@ -54,11 +61,13 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
         SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         String dateText = df2.format(historyDto.getTrip_dto().getDateTime());
         holder.getDate().setText(dateText);
-        holder.getDistance().setText(historyDto.getDistance() + "");
+        holder.getDistance().setText(String.format("%.4f", historyDto.getDistance()) + "M");
         holder.getDurtaiion().setText(historyDto.getDurtation() + "");
-        holder.getStatus().setText("done");
+        holder.getStatus().setText(historyDto.getStatus());
         holder.setHistoryDto(historyDto);
-
+        holder.setPos(position);
+        if (historyDto.getPoints() != null && historyDto.getPoints().size() > 0)
+            historyDto.getTrip_dto().setImageWithRoute(MaPUtil.getStaticMapRoad(historyDto.getTrip_dto().getImageWithoutRoute(), historyDto.getPoints()));
 
         Picasso.get().load(historyDto.getTrip_dto().getImageWithRoute())
                 .placeholder(R.drawable.ic_done)
@@ -67,7 +76,9 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
                 .into(holder.getRoute());
 
 
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -82,7 +93,9 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
         private TextView status;
         private ImageView route;
         private HistoryDto historyDto = null;
+        private ImageView delete = null;
         private CardView cardView;
+        private int pos;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -93,13 +106,31 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
             status = itemView.findViewById(R.id.status);
             route = itemView.findViewById(R.id.route);
             cardView = itemView.findViewById(R.id.historycard);
+            delete = itemView.findViewById(R.id.menu);
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = historyDtoArrayList.indexOf(historyDto);
+                    historyDtoArrayList.remove(historyDto);
+                    // notifyItemRemoved(pos);
+                    fireBaseConnection.setHistory(historyDtoArrayList);
+                }
+            });
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(context, "hello", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, HistoryDetails.class);
+                    Log.i("click", "onClick: " + historyDto.getTrip_dto().getId());
+                    intent.putExtra("id", historyDto.getTrip_dto().getId());
+                    context.startActivity(intent);
                 }
             });
 
+        }
+
+        public void setPos(int pos) {
+            this.pos = pos;
         }
 
         public void setHistoryDto(HistoryDto historyDto) {

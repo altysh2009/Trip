@@ -42,7 +42,7 @@ public class HistoryFragment extends Fragment implements Controls, FireBaseConne
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.i(TAG, "onCreateView: " + "fragment");
-        Toast.makeText(getContext(), "fragemnt", Toast.LENGTH_LONG).show();
+
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         recyclerView = view.findViewById(R.id.recyclehistory);
         adaptor = new HistoryAdaptor(getContext());
@@ -62,6 +62,12 @@ public class HistoryFragment extends Fragment implements Controls, FireBaseConne
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        fireBaseConnection.removeLisner();
+    }
+
+    @Override
     public void setTrip(View view) {
 
     }
@@ -74,17 +80,19 @@ public class HistoryFragment extends Fragment implements Controls, FireBaseConne
 
     @Override
     public void updateUi(List<Trip_DTO> trip) {
-        Toast.makeText(getContext(), "updateUi", Toast.LENGTH_LONG);
+        // Toast.makeText(getContext(), "updateUi", Toast.LENGTH_LONG);
     }
 
     @Override
     public void updateUser(UserProfile userProfile) {
-        Toast.makeText(getContext(), "updateUser", Toast.LENGTH_LONG);
+        //  Toast.makeText(getContext(), "updateUser", Toast.LENGTH_LONG);
     }
 
     @Override
     public void updateHistory(List<HistoryDto> history) {
-        Toast.makeText(getContext(), "historyFragment", Toast.LENGTH_LONG);
+        //  Toast.makeText(getContext(), "historyFragment", Toast.LENGTH_LONG);
+        Toast.makeText(getContext(), "historyFragment", Toast.LENGTH_LONG).show();
+        if (history != null)
         adaptor.setHistoryDtoArrayList((ArrayList<HistoryDto>) history);
     }
 }
