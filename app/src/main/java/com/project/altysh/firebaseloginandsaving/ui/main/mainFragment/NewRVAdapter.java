@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,7 +98,7 @@ public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHold
         TextView tripTime;
         ImageView imageView;
         boolean flag = false;
-        ImageView editButton;
+        ImageButton editButton;
         TextView editDate;
         Trip_DTO holderTrip;
         java.text.DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -133,7 +134,7 @@ public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHold
 
             ////////////////////Edit////////////////////////
 
-            
+
             editButton = itemView.findViewById(R.id.editBtn);
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override

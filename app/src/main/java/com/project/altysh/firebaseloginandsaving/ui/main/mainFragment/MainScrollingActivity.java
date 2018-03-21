@@ -89,7 +89,14 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
             @Override
             public void afterTextChanged(Editable s) {
                 List<Trip_DTO> upcomingTrips = new ArrayList<>();
+                if (trip_dtos != null) {
+                    for (Trip_DTO trip_dto : trip_dtos) {
+                        if (trip_dto.getTripName().contains(s.toString()))
+                            upcomingTrips.add(trip_dto);
 
+                    }
+                    homeScreen.setDate(upcomingTrips);
+                }
             }
         });
     }
