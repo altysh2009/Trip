@@ -71,9 +71,7 @@ public class HistoryAdaptor extends RecyclerView.Adapter<HistoryAdaptor.ViewHold
 
         Picasso.get().load(historyDto.getTrip_dto().getImageWithRoute())
                 .placeholder(R.drawable.ic_done)
-                .error(R.drawable.ic_done).fit().centerCrop()
-
-                .into(holder.getRoute());
+                .error(R.drawable.ic_done).into(holder.getRoute());
 
 
 

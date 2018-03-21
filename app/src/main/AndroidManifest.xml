@@ -26,11 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.main.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".ui.addTrip.EditorActivity" />
 
@@ -56,11 +52,11 @@
         <activity
             android:name=".ui.history.History_Activity"
             android:label="@string/title_activity_history_"
-            android:parentActivityName=".ui.main.MainActivity"
+            android:parentActivityName=".ui.main.mainFragment.MainScrollingActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.main.MainActivity" />
+                android:value=".ui.main.mainFragment.MainScrollingActivity" />
         </activity>
         <!-- //alarm -->
         <service
@@ -80,12 +76,12 @@
         <activity
             android:name=".ReminderAlarm.reminder"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
 
         <service
             android:name=".ReminderAlarm.SoundService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".ui.history.HistoryDetails"
@@ -95,6 +91,16 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.history.History_Activity" />
+        </activity>
+        <activity
+            android:name=".ui.main.mainFragment.MainScrollingActivity"
+            android:label="@string/title_activity_main_scrolling"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

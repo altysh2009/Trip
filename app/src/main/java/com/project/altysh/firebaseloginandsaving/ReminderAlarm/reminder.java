@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.project.altysh.firebaseloginandsaving.R;
@@ -13,6 +14,7 @@ import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
 import com.project.altysh.firebaseloginandsaving.mapUtil.MaPUtil;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.FloatingWidgetService;
+import com.squareup.picasso.Picasso;
 
 import java.util.Queue;
 
@@ -23,6 +25,7 @@ public class reminder extends Activity {
     Queue<AlertDialog.Builder> queue;
     int i = 0;
     int id;
+    Trip_DTO trip;
     private Intent mServiceIntent;
 
     @Override
@@ -30,6 +33,9 @@ public class reminder extends Activity {
         super.onCreate(savedInstanceState);
         IntentWarrper warrper = (IntentWarrper) getIntent().getSerializableExtra("Mapsintent");
         alertDialog = new AlertDialog.Builder(reminder.this);
+        ImageView image = new ImageView(this);
+        FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(this);
+
         //dismiss dialog
         //later
         alertDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -62,15 +68,20 @@ public class reminder extends Activity {
         if (getIntent().getStringExtra("newTripValue") != null) {
             //new dialog set new i  .
             i = Integer.parseInt(getIntent().getStringExtra("newTripValue"));
-            alertDialog.setTitle("planned trip no " + i);
+            //alertDialog.setTitle("planned trip no " + i);
+            trip = fireBaseConnection.getTripById(i);
+            alertDialog.setTitle("planned trip : " + trip.getTripName());
+
         } else if (getIntent().getStringExtra("laterbefore") != null) {
             //later
             //get NOTIFICATION_ID
             id = Integer.parseInt(getIntent().getStringExtra("laterbefore"));
-            alertDialog.setTitle("snoozed planned trip no " + id);
+            trip = fireBaseConnection.getTripById(i);
+            alertDialog.setTitle("planned trip : " + trip.getTripName());
+            //alertDialog.setTitle("snoozed planned trip no " + id);
         }
         // Setting Dialog Message
-        alertDialog.setMessage("it is time now for your Trip");
+        alertDialog.setMessage("it is time now for your trip");
         // Setting Positive "Start" Button
         alertDialog.setPositiveButton("Start", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -139,21 +150,26 @@ public class reminder extends Activity {
 
                 }
                 FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getApplicationContext());
-                HistoryDto historyDto = new HistoryDto();
-                historyDto.setTrip_dto(fireBaseConnection.getTripById(i));
-                Toast.makeText(getApplicationContext(), fireBaseConnection.getTripById(i) + " data", Toast.LENGTH_LONG).show();
+                if (fireBaseConnection.getTripById(i) != null) {
+                    HistoryDto historyDto = new HistoryDto();
+
+                    historyDto.setTrip_dto(fireBaseConnection.getTripById(i));
+                    Toast.makeText(getApplicationContext(), fireBaseConnection.getTripById(i) + " data", Toast.LENGTH_LONG).show();
 
 
-                historyDto.setStatus(historyDto.CANCLED);
-                fireBaseConnection.addHistoryTrip(historyDto);
-                fireBaseConnection.deleteTrip(fireBaseConnection.getTripById(i));
+                    historyDto.setStatus(historyDto.CANCLED);
+                    fireBaseConnection.addHistoryTrip(historyDto);
+
+                    fireBaseConnection.deleteTrip(fireBaseConnection.getTripById(i));
+                }
                 stopService(soundService);
                 Toast.makeText(getApplicationContext(), "You clicked on cancel", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
-
-        alertDialog.show();
+        Picasso.get().load(trip.getImageWithRoute()).placeholder(R.drawable.ic_done).error(R.drawable.ic_done).
+                into(image);
+        alertDialog.setView(image).show();
 
         soundService = new Intent(this, SoundService.class);
         startService(soundService);

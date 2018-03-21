@@ -32,6 +32,7 @@ public class NotificationService extends IntentService {
     PendingIntent pintent;
     Intent mServiceIntent;
     int Millis;
+    Trip_DTO Trip;
 
     public NotificationService() {
         super("NotificationService");
@@ -46,6 +47,7 @@ public class NotificationService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getApplicationContext());
 
         //check new later dialoge or dialoge before
         if (intent.getStringExtra("newTripLater") != null) {
@@ -53,6 +55,8 @@ public class NotificationService extends IntentService {
         } else if (intent.getStringExtra("laterbefore") != null) {
             NOTIFICATION_ID = Integer.parseInt(intent.getStringExtra("laterbefore"));
         }
+        Trip = fireBaseConnection.getTripById(NOTIFICATION_ID);
+        //Trip.setId(NOTIFICATION_ID);
         Log.i("NOTIFICATION_ID", NOTIFICATION_ID + "");
         mServiceIntent = new Intent(getApplicationContext(), MyReceiverDialog.class);
         mServiceIntent.putExtra("laterbefore", NOTIFICATION_ID + "");
@@ -70,7 +74,7 @@ public class NotificationService extends IntentService {
         if (action.equals(ACTION_NOTIFY)) {
             //later notification
             if (intent.getStringExtra("newTripLater") != null) {
-                createNotification(intent, NOTIFICATION_ID + "");
+                createNotification(intent, Trip.getTripName());
                 createNotification(builder);
             }
 
@@ -80,15 +84,16 @@ public class NotificationService extends IntentService {
         } else if (action.equals(ACTION_DISMISS)) {
             mNotificationManager.cancel(intent.getIntExtra("idC", 0));
             alarm.cancel(pintent);
-            FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getApplicationContext());
-            HistoryDto historyDto = new HistoryDto();
-            historyDto.setTrip_dto(fireBaseConnection.getTripById(NOTIFICATION_ID));
-            historyDto.setStatus(historyDto.CANCLED);
-            fireBaseConnection.addHistoryTrip(historyDto);
-            fireBaseConnection.deleteTrip(fireBaseConnection.getTripById(NOTIFICATION_ID));
-
+            // FireBaseConnection fireBaseConnection = FireBaseConnection.getInstance(getApplicationContext());
+            if (fireBaseConnection.getTripById(NOTIFICATION_ID) != null) {
+                HistoryDto historyDto = new HistoryDto();
+                historyDto.setTrip_dto(fireBaseConnection.getTripById(NOTIFICATION_ID));
+                historyDto.setStatus(historyDto.CANCLED);
+                fireBaseConnection.addHistoryTrip(historyDto);
+                fireBaseConnection.deleteTrip(fireBaseConnection.getTripById(NOTIFICATION_ID));
+            }
         } else if (action.equals(ACTION_START)) {
-            //start Trip
+            //start trip
             Trip_DTO trip_dto = FireBaseConnection.getInstance(getApplicationContext()).getTripById(NOTIFICATION_ID);
             if (trip_dto != null) {
                 getApplicationContext().startActivity(MaPUtil.getIntentDir(trip_dto));
@@ -127,8 +132,8 @@ public class NotificationService extends IntentService {
 
         builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_event_note_black_24dp)
-                .setContentTitle("planned Trip no " + msg)
-                .setContentText("it is time now for your Trip")
+                .setContentTitle("planned trip no " + msg)
+                .setContentText("it is time now for your trip")
                 .setDefaults(Notification.DEFAULT_VIBRATE)
                 .addAction(R.drawable.ic_do_not_disturb_black_24dp,
                         getString(R.string.dismiss), piDismiss)

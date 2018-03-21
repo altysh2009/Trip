@@ -9,4 +9,5 @@
     <string name="dis">Distance</string>
     <string name="starttime">Start Time</string>
     <string name="arrivaltime">Arrival Time</string>
+    <string name="search_upcoming_trips">Search Upcoming Trips...</string>
 </resources>

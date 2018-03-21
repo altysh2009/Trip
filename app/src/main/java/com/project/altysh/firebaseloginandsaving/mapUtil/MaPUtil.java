@@ -1,5 +1,6 @@
 package com.project.altysh.firebaseloginandsaving.mapUtil;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -63,6 +64,13 @@ public class MaPUtil {
 
     }
 
+    public static void dir(Context context) {
+        Uri gmmIntentUri = Uri.parse("google.navigation:q=31.252421399999992,29.994286700000004");
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        context.startActivity(mapIntent);
+
+    }
 
     private static Uri getUri(Trip_DTO trip_dto) {
         StringBuffer builder = new StringBuffer();

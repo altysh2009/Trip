@@ -358,25 +358,35 @@ public class EditorFragmentActivity extends Fragment implements DatePickerDialog
         userSelectedHour = selectedHour;
         userSelectedMinute = selectedMinute;
 
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        Log.i("ddddddd", DateFormat.format("dd-MM-yyyy hh:mm a",
+                new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay,
+                        userSelectedHour, userSelectedMinute)).toString());
 
-
+        String dob = DateFormat.format("yyyy-MM-dd hh:mm:ss",
+                new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay,
+                        userSelectedHour, userSelectedMinute)).toString();
         try {
-            Date EndTime = dateFormat.parse(DateFormat.format("hh:mm a", new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay, selectedHour, selectedMinute)).toString());
-            Date CurrentTime = dateFormat.parse(dateFormat.format(new Date()));
+            if (dob.length() > 1) {
+                Date dobDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(dob);
+                if ((new Date().getMonth() == dobDate.getMonth()) && (new Date().getDate() == dobDate.getDate())) {
+                    Date EndTime = dateFormat.parse(DateFormat.format("hh:mm a", new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay, selectedHour, selectedMinute)).toString());
+                    Date CurrentTime = dateFormat.parse(dateFormat.format(new Date()));
 
-            if (CurrentTime.after(EndTime)) {
-                Toast.makeText(getActivity(), "time passed", Toast.LENGTH_SHORT).show();
-            } else {
-                TimeText.setText(DateFormat.format("hh:mm a", new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay, selectedHour, selectedMinute)).toString());
-                HasChanged = true;
+                    if (CurrentTime.after(EndTime)) {
+                        Toast.makeText(getActivity(), "time passed", Toast.LENGTH_SHORT).show();
+                    } else {
+                        TimeText.setText(DateFormat.format("hh:mm a", new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay, selectedHour, selectedMinute)).toString());
+                        HasChanged = true;
+                    }
 
-                Log.i("ddddddd", DateFormat.format("dd-MM-yyyy hh:mm a",
-                        new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay,
-                                userSelectedHour, userSelectedMinute)).toString());
-
+                } else {
+                    TimeText.setText(DateFormat.format("hh:mm a", new Date(UserSelectedYear - 1900, UserSelectedMonth, UserSelectedDay, selectedHour, selectedMinute)).toString());
+                    HasChanged = true;
+                }
             }
+
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -399,7 +409,7 @@ public class EditorFragmentActivity extends Fragment implements DatePickerDialog
                 DateTextString + TimeTextString);
 
         // validate all the required information
-        if (!(TextUtils.isEmpty(NotesString)) && !(TextUtils.isEmpty(StartPointString))
+        if (!(TextUtils.isEmpty(StartPointString))
                 && !(TextUtils.isEmpty(TripNameString)) && !(TextUtils.isEmpty(EndPointString))
                 && !(TextUtils.isEmpty(DateTextString)) && !(TextUtils.isEmpty(TimeTextString))) {
 

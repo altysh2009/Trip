@@ -69,6 +69,8 @@ public class FireBaseConnection {
             new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
     private FireBaseLisner fireBaseLisner;
     private FireBaseConnection(Context context) {
+        mFirebaseInstance = FirebaseDatabase.getInstance();
+        mFirebaseInstance.setPersistenceEnabled(true);
         sharedLisner = new SharedLisner(new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -98,8 +100,7 @@ public class FireBaseConnection {
         sharedPreferences = context.getSharedPreferences(SHAREPREF, 0);
         sharedPreferences.registerOnSharedPreferenceChangeListener(sharedLisner.getMylsiner());
 
-        mFirebaseInstance = FirebaseDatabase.getInstance();
-        mFirebaseInstance.setPersistenceEnabled(true);
+
         mFirebaseDatabase = mFirebaseInstance.getReference().child(BASE);
 
         userId = sharedPreferences.getString("userid", "");
@@ -118,20 +119,22 @@ public class FireBaseConnection {
 
         if (myobject != null) {
             myobject.setContext(context);
-            myobject.setConnection(connectToUiMain);
+            if (connectToUiMain != null)
+                myobject.setConnection(connectToUiMain);
             return myobject;
         } else {
             myobject = new FireBaseConnection(context);
             //smyobject.setContext(context);
-            myobject.setConnection(connectToUiMain);
+            if (connectToUiMain != null)
+                myobject.setConnection(connectToUiMain);
         }
         return myobject;
     }
 
     public int getNewId() {
         if (trip_dtoList != null)
-            newId = trip_dtoList.size() + 1;
-        else newId = 0;
+            newId = trip_dtoList.size() + 1 + newId + historyDtosList.size();
+        else newId = historyDtosList.size() + 1 + newId;
         return newId;
     }
 
@@ -433,7 +436,8 @@ public class FireBaseConnection {
      *                 remove it from firebase
      */
     public void deleteTrip(Trip_DTO trip_dto) {
-
+        FnReminder fnReminder = FnReminder.getInstance(context);
+        fnReminder.RemoveReminder(trip_dto);
         trip_dtoList.remove(trip_dto);
         setList(trip_dtoList);
     }

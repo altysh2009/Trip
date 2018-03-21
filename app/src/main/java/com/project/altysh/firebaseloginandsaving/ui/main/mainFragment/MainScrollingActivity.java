@@ -1,4 +1,4 @@
-package com.project.altysh.firebaseloginandsaving.ui.main;
+package com.project.altysh.firebaseloginandsaving.ui.main.mainFragment;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -14,8 +14,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -34,10 +40,11 @@ import com.project.altysh.firebaseloginandsaving.ui.addTrip.EditorActivity;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.FloatingWidgetService;
 import com.project.altysh.firebaseloginandsaving.ui.history.History_Activity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements FireBaseConnection.connectToUiMain, Controls {
+public class MainScrollingActivity extends AppCompatActivity implements FireBaseConnection.connectToUiMain, Controls {
     private static final int RC_SIGN_IN = 123;
     private static final int DRAW_OVER_OTHER_APP_PERMISSION = 1234;
     final int itemAdd = 12;
@@ -46,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
     AuthCredential credential;
     List<Trip_DTO> trip_dtos = null;
     UserProfile userProfile = null;
+    HomeScreen homeScreen;
     private String userId;
     private SharedPreferences sharedPreferences;
     private String TAG = "MAINACTIVTY";
@@ -53,20 +61,57 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_scrolling);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        homeScreen = (HomeScreen) getSupportFragmentManager().findFragmentByTag("mainfrag");
         FloatingActionButton fab = findViewById(R.id.fab);
-
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+                Intent intent = new Intent(MainScrollingActivity.this, EditorActivity.class);
                 //(intent,itemAdd);
                 startActivity(intent);
             }
         });
+        EditText searchView = findViewById(R.id.searchUpcomingTrips);
+        searchView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                List<Trip_DTO> upcomingTrips = new ArrayList<>();
+
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_history:
+                openHistory(null);
+                break;
+            case R.id.action_settings:
+                break;
+
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu, this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main_scrolling, menu);
+        return true;
     }
 
     @Override
@@ -166,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
                 alertDialog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(MainActivity.this,
+                        ActivityCompat.requestPermissions(MainScrollingActivity.this,
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET},
                                 itemAdd);
                     }
@@ -175,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
 
             } else {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this,
+                    ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET},
                             itemAdd);
                 }
@@ -232,6 +277,7 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
             }
             sharedPreferences.edit().putBoolean("isFrist", false).apply();
         }
+        homeScreen.setDate(trip_dtos);
 
         // startActivity(MaPUtil.getIntentDir(trip.get(10)));
         // startActivity(MaPUtil.get3DView(trip.get(10).getStartLatitude(),trip.get(10).getStartLongitude()));
@@ -265,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements FireBaseConnectio
 
     public void showBuble(View view) {
         askForSystemOverlayPermission();
-        startService(new Intent(MainActivity.this, FloatingWidgetService.class).putExtra("activity_background", true));
+        startService(new Intent(MainScrollingActivity.this, FloatingWidgetService.class).putExtra("activity_background", true));
     }
 
     public boolean askForSystemOverlayPermission() {
