@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.project.altysh.firebaseloginandsaving.R;
 import com.project.altysh.firebaseloginandsaving.dto.HistoryDto;
 import com.project.altysh.firebaseloginandsaving.firebaseUtails.FireBaseConnection;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.MySimpleArrayAdapter;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.NoteObj;
-import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.PointDara;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +28,10 @@ import static java.lang.Math.acos;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+//import com.jjoe64.graphview.GraphView;
+//import com.jjoe64.graphview.series.DataPoint;
+//import com.jjoe64.graphview.series.LineGraphSeries;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -42,7 +41,7 @@ public class FragmentDetails extends Fragment {
     TextView startTime;
     TextView endTime;
     TextView distance;
-    GraphView graph;
+    // GraphView graph;
     FireBaseConnection fireBaseConnection;
     HistoryDto historyDto;
     ImageView imageView;
@@ -64,21 +63,11 @@ public class FragmentDetails extends Fragment {
         distance = view.findViewById(R.id.distance);
         fireBaseConnection = FireBaseConnection.getInstance(getContext());
         recyclerView = view.findViewById(R.id.recyclev);
-        graph = view.findViewById(R.id.graph);
+        // graph = view.findViewById(R.id.graph);
         imageView = view.findViewById(R.id.imageView2);
 
 
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(150);
 
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(4);
-        graph.getViewport().setMaxX(100);
-
-        // enable scaling and scrolling
-        graph.getViewport().setScalable(true);
-        graph.getViewport().setScalableY(true);
 
         return view;
     }
@@ -120,11 +109,7 @@ public class FragmentDetails extends Fragment {
             stringBuilder = new StringBuilder().append(String.format("%.4f", historyDto.getDistance() / 1000)).append("KM");
         else stringBuilder = new StringBuilder().append("Never Started");
         distance.setText(stringBuilder.toString());
-        LineGraphSeries<DataPoint> series;
-        if (historyDto.getPoints() != null)
-            series = new LineGraphSeries<>(getArray(historyDto.getPoints()));
-        else series = new LineGraphSeries<>(getArray(new ArrayList<PointDara>()));
-        graph.addSeries(series);
+
         Picasso.get().load(historyDto.getTrip_dto().getImageWithRoute()).resize(800, 600).into(imageView);
 
 
@@ -137,7 +122,7 @@ public class FragmentDetails extends Fragment {
             return String.format("%s", d);
     }
 
-    DataPoint[] getArray(List<PointDara> list) {
+  /* DataPoint[] getArray(List<PointDara> list) {
         List<DataPoint> dataPointList = new ArrayList<>();
         long last = 0;
         for (int i = 0; i < list.size() - 1; i++) {
@@ -149,7 +134,7 @@ public class FragmentDetails extends Fragment {
         }
         DataPoint[] retArray = new DataPoint[dataPointList.size()];
         return dataPointList.toArray(retArray);
-    }
+    }*/
 
     double distance_on_geoid(double lat1, double lon1, double lat2, double lon2) {
         float M_PI = 3.14f;

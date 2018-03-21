@@ -60,6 +60,7 @@ public class HomeScreen extends Fragment {
         textView = view.findViewById(R.id.no_date);
         Context context = view.getContext();
         layoutManager = new LinearLayoutManager(context);
+        layoutManager.setAutoMeasureEnabled(true);
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new NewRVAdapter(trips, getActivity());

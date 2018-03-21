@@ -99,6 +99,7 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
                 }
             }
         });
+
     }
 
     @Override
@@ -109,6 +110,7 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
                 break;
             case R.id.action_settings:
                 break;
+
 
         }
         return true;
@@ -127,7 +129,8 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
         fireBaseConnection = FireBaseConnection.getInstance(this, this);
         sharedPreferences = getSharedPreferences(FireBaseConnection.SHAREPREF, 0);
         //fireBaseConnection.setConnection(this);
-
+        fireBaseConnection = FireBaseConnection.getInstance(this, this);
+        sharedPreferences = getSharedPreferences(FireBaseConnection.SHAREPREF, 0);
         userId = sharedPreferences.getString("userid", "");
         if (userId.equals("")) {
             Log.i(TAG, "onStart: no user");
@@ -147,6 +150,7 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
             }
 
         }
+
 
     }
 
@@ -173,11 +177,13 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
 
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+                if (user.getEmail() != null && user.getEmail().length() == 0)
+                    user.updateEmail("user");
 
                 //Log.i(TAG, "onActivityResult: "+user.getProviders());
                 this.userId = user.getUid();
-                sharedPreferences.edit().putString("userid", userId).apply();
+                Log.i(TAG, "onActivityResult: " + userId);
+                sharedPreferences.edit().putString("userid", userId).commit();
                 fireBaseConnection.setSync(true);
                 fireBaseConnection.rejesterLisner();
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
@@ -226,11 +232,11 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
 
 
             } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,
-                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET},
-                            itemAdd);
-                }
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(this,
+//                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET},
+//                            itemAdd);
+//                }
                 askForSystemOverlayPermission();
             }
 
@@ -246,6 +252,7 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
     @Override
     protected void onStop() {
         super.onStop();
+        //fireBaseConnection.removeLisner();
 
     }
 

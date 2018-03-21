@@ -295,5 +295,6 @@
     <string name="log_out">Log Out</string>
     <string name="log_in">Log In</string>
     <string name="no_trips_yet">No Trips Yet</string>
+    <string name="start">Start</string>
 
 </resources>

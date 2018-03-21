@@ -64,20 +64,18 @@ public class FireBaseConnection {
     private int newId;
     private List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-            new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build());
+            //new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+            new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()//,
+            // new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()
+    );
     private FireBaseLisner fireBaseLisner;
     private FireBaseConnection(Context context) {
         mFirebaseInstance = FirebaseDatabase.getInstance();
         mFirebaseInstance.setPersistenceEnabled(true);
-        sharedLisner = new SharedLisner(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                Log.i(TAG, "onSharedPreferenceChanged: " + key);
-                if (key.equals("userid")) {
-                    userId = sharedPreferences.getString(key, null);
-                }
+        sharedLisner = new SharedLisner((sharedPreferences, key) -> {
+            Log.i(TAG, "onSharedPreferenceChanged: " + key);
+            if (key.equals("userid")) {
+                userId = sharedPreferences.getString(key, null);
             }
         });
         fireBaseLisner = new FireBaseLisner(new FirebaseAuth.AuthStateListener() {
@@ -112,7 +110,7 @@ public class FireBaseConnection {
     public static FireBaseConnection getInstance(Context context) {
         if (myobject != null)
             return myobject;
-        else return new FireBaseConnection(context);
+        else return getInstance(context, null);
     }
 
     public static FireBaseConnection getInstance(Context context, connectToUiMain connectToUiMain) {
