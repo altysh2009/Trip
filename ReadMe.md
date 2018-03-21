@@ -7,9 +7,13 @@ by the user. In addition, the application navigates the user to his
 destination. After that, the application keeps track with the upcoming and
 past trips.
 
-### Prerequisites
+## Prerequisites
 
 API level from 22 to 27.
+
+## Running the tests
+
+Tested on Emulator with an API level 22 and 25, and a device with an API level 22.
 
 ## Authors
 
