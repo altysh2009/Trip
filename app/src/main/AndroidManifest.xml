@@ -58,6 +58,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.main.mainFragment.MainScrollingActivity" />
         </activity>
+        <activity
+            android:name=".ui.EditTrip.EditorActivity"
+            android:label="Edit"
+            android:parentActivityName=".ui.main.mainFragment.MainScrollingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.main.mainFragment.MainScrollingActivity" />
+        </activity>
         <!-- //alarm -->
         <service
             android:name=".ReminderAlarm.NotificationService"

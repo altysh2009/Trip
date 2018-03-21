@@ -133,8 +133,10 @@ public class FireBaseConnection {
 
     public int getNewId() {
         if (trip_dtoList != null)
-            newId = trip_dtoList.size() + 1 + newId + historyDtosList.size();
-        else newId = historyDtosList.size() + 1 + newId;
+            newId = trip_dtoList.size() + 1;
+        if (historyDtosList != null)
+            newId = historyDtosList.size() + 1;
+        newId++;
         return newId;
     }
 
@@ -160,13 +162,7 @@ public class FireBaseConnection {
 
     public void editTrip(Trip_DTO trip_dto) {
         if (trip_dtoList != null)
-            for (Trip_DTO tripDto : trip_dtoList) {
-                if (tripDto.getId() == trip_dto.getId()) {
-                    trip_dtoList.remove(tripDto);
-                    trip_dtoList.add(trip_dto);
-                    setList(trip_dtoList);
-                }
-            }
+            setList(trip_dtoList);
     }
 
     public void deleteHistory(HistoryDto historyDto) {

@@ -1,6 +1,7 @@
 package com.project.altysh.firebaseloginandsaving.ui.main.mainFragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.project.altysh.firebaseloginandsaving.R;
 import com.project.altysh.firebaseloginandsaving.dto.Trip_DTO;
+import com.project.altysh.firebaseloginandsaving.ui.EditTrip.EditorActivity;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.MySimpleArrayAdapter;
 import com.project.altysh.firebaseloginandsaving.ui.floatingWidgit.NoteObj;
 import com.project.altysh.firebaseloginandsaving.ui.history.HistoryDetialAdaptor;
@@ -31,8 +33,8 @@ import java.util.List;
 
 public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHolder> {
 
+    private static Activity activity;
     private List<Trip_DTO> trips;
-    private Activity activity;
 
     NewRVAdapter(List<Trip_DTO> trips, Activity activity) {
         this.trips = trips;
@@ -51,6 +53,8 @@ public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHold
     public TripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_card_layout, parent, false);
         TripViewHolder tripViewHolder = new TripViewHolder(v);
+
+
         return tripViewHolder;
     }
 
@@ -139,7 +143,9 @@ public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHold
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(activity, EditorActivity.class);
+                    intent.putExtra("id", holderTrip.getId());
+                    activity.startActivity(intent);
                 }
             });
 

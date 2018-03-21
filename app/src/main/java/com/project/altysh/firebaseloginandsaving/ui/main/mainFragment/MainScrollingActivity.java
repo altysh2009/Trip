@@ -275,13 +275,15 @@ public class MainScrollingActivity extends AppCompatActivity implements FireBase
                     historyDto.setStatus(historyDto.CANCLED);
                     trip_dtos.remove(trip_dto);
                     fireBaseConnection.addHistoryTrip(historyDto);
+                    fireBaseConnection.setList(trip_dtos);
                     i--;
 
                 }
-                fireBaseConnection.setList(trip_dtos);
+
 
                 Log.i(TAG, "updateUi: " + trip_dto.getId());
             }
+
             sharedPreferences.edit().putBoolean("isFrist", false).apply();
         }
         homeScreen.setDate(trip_dtos);
