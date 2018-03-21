@@ -133,11 +133,12 @@ public class NewRVAdapter extends RecyclerView.Adapter<NewRVAdapter.TripViewHold
 
             ////////////////////Edit////////////////////////
 
+            
             editButton = itemView.findViewById(R.id.editBtn);
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    
+
                 }
             });
 
