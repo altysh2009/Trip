@@ -17,6 +17,9 @@ Tested on Emulator with an API level 22 and 25, and a device with an API level 2
 
 ## Authors
 
-* **Ahmed Mubarak** 
-* **Nehal Salah** 
-* **Nouran Samak** 
+* **Ahmed Mubarak** -Team Leader
+ Firebase database, social media integration (facebook), floating icon, gps monitoring, maps, history, history details. 
+* **Nehal Salah**  
+ *Create a new trip with a start point and multi-end points, edit trips, notes, validation on inputs, creating alarm, prodcast receiver, push notifications, sound, custom dialog, snooze.* 
+* **Nouran Samak**  
+ *Main screen with card view, delete trips, trip details.* 
