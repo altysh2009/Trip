@@ -77,7 +77,7 @@ public class MaPUtil {
 
         builder.append("http://");
         builder.append("maps.google.com/maps?");
-        builder.append("saddr=" + trip_dto.getStartLatitude() + "," + trip_dto.getStartLongitude());
+        builder.append("daddr=" + trip_dto.getStartLatitude() + "," + trip_dto.getStartLongitude());
         StringBuilder stringBuffer = new StringBuilder();
         stringBuffer.append(trip_dto.getEndLatitude().get(0)).append(",").append(trip_dto.getEndLongitude().get(0));
         for (int i = 1; i < trip_dto.getEndLatitude().size(); i++) {
@@ -85,7 +85,7 @@ public class MaPUtil {
             stringBuffer.append(trip_dto.getEndLatitude().get(i)).append(",").append(trip_dto.getEndLongitude().get(i));
         }
 
-        builder.append("&daddr=" + stringBuffer.toString());
+        builder.append("+to:" + stringBuffer.toString());
         //  Log.e("uri", "getUri: "+Uri.parse(builder.toString()));
         //System.out.println(builder);
 
